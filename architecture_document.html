@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>System Architecture Specification - Talking Tables POS | Koraxa Technologies</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+    @page {
+      size: A4;
+      margin: 14mm 16mm 14mm 16mm;
+      @bottom-right {
+        content: "Page " counter(page);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 8pt;
+        color: #64748b;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #1e293b;
+      background: #ffffff;
+      line-height: 1.5;
+      font-size: 9.5pt;
+    }
+
+    .page {
+      page-break-after: always;
+      position: relative;
+      min-height: 260mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .page:last-child {
+      page-break-after: avoid;
+    }
+
+    /* Header Bar */
+    .doc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #0f172a;
+      margin-bottom: 16px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #0284c7, #0f172a);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 14pt;
+    }
+
+    .brand-name {
+      font-size: 13pt;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-sub {
+      font-size: 7.5pt;
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .doc-meta {
+      text-align: right;
+      font-size: 7.5pt;
+      color: #64748b;
+    }
+
+    .doc-meta b {
+      color: #0f172a;
+    }
+
+    /* Cover Page */
+    .cover-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+      padding: 40px 10px;
+    }
+
+    .cover-badge {
+      display: inline-block;
+      align-self: flex-start;
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 8.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+
+    .cover-title {
+      font-size: 26pt;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+
+    .cover-subtitle {
+      font-size: 12pt;
+      color: #475569;
+      font-weight: 400;
+      margin-bottom: 30px;
+      max-width: 90%;
+    }
+
+    .client-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #0284c7;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 30px;
+    }
+
+    .client-card h3 {
+      font-size: 10pt;
+      font-weight: 700;
+      color: #0284c7;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .client-name {
+      font-size: 14pt;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    .client-details {
+      font-size: 8.5pt;
+      color: #475569;
+      line-height: 1.4;
+    }
+
+    .cover-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .meta-box {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+
+    .meta-box label {
+      display: block;
+      font-size: 7pt;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+
+    .meta-box value {
+      display: block;
+      font-size: 9pt;
+      font-weight: 700;
+      color: #0f172a;
+      margin-top: 2px;
+    }
+
+    /* Headings & Typography */
+    h1 {
+      font-size: 14pt;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.3px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h1 .badge {
+      background: #0284c7;
+      color: #fff;
+      font-size: 8pt;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    h2 {
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: #1e293b;
+      margin-top: 14px;
+      margin-bottom: 6px;
+    }
+
+    p {
+      color: #334155;
+      margin-bottom: 8px;
+      line-height: 1.45;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 14px 0;
+      font-size: 8pt;
+    }
+
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      font-weight: 700;
+      text-align: left;
+      padding: 6px 10px;
+      border: 1px solid #0f172a;
+      font-size: 7.5pt;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 5.5px 10px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+      vertical-align: top;
+    }
+
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 7pt;
+      font-weight: 700;
+    }
+    .tag-blue { background: #e0f2fe; color: #0369a1; }
+    .tag-green { background: #dcfce7; color: #15803d; }
+    .tag-amber { background: #fef3c7; color: #b45309; }
+    .tag-rose { background: #ffe4e6; color: #be123c; }
+
+    /* Highlights / Callouts */
+    .callout {
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin: 10px 0;
+      font-size: 8.5pt;
+      border-left: 4px solid;
+    }
+
+    .callout-info {
+      background: #f0f9ff;
+      border-color: #0284c7;
+      color: #0c4a6e;
+    }
+
+    .callout-warn {
+      background: #fffbeb;
+      border-color: #f59e0b;
+      color: #78350f;
+    }
+
+    .callout-success {
+      background: #f0fdf4;
+      border-color: #22c55e;
+      color: #14532d;
+    }
+
+    /* Diagram Containers */
+    .diagram-container {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 12px;
+      margin: 10px 0 14px 0;
+      text-align: center;
+    }
+
+    .diagram-caption {
+      font-size: 7.5pt;
+      font-weight: 600;
+      color: #64748b;
+      margin-top: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Grid Layouts */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .card-title {
+      font-size: 9pt;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.5pt;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+
+    .footer {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 8px;
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      font-size: 7.5pt;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== PAGE 1: COVER PAGE ==================== -->
+  <div class="page">
+    <div class="doc-header">
+      <div class="brand-group">
+        <div class="brand-logo">K</div>
+        <div>
+          <div class="brand-name">KORAXA TECHNOLOGIES</div>
+          <div class="brand-sub">Enterprise Engineering &amp; Solutions Division</div>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <div>Doc Ref: <b>KT-ARCH-TT-2026-V1</b></div>
+        <div>Date: <b>October 31, 2026</b></div>
+      </div>
+    </div>
+
+    <div class="cover-container">
+      <div class="cover-badge">System Architecture &amp; Technical Blueprint</div>
+      <h1 class="cover-title">Talking Tables POS &amp; PnL Engine</h1>
+      <p class="cover-subtitle">
+        High-throughput counter point-of-sale system, integrated daily expense ledger, local-first offline resilience, and dual WhatsApp automated dispatch architecture.
+      </p>
+
+      <div class="client-card">
+        <h3>Commissioned For &amp; Client Metadata</h3>
+        <div class="client-name">Talking Tables Restaurant</div>
+        <div class="client-details">
+          <b>Address:</b> Beside Vignan University Main Gate, Vadlamudi, Andhra Pradesh – 522213<br>
+          <b>Contact Phone:</b> +91 9346477777<br>
+          <b>Category:</b> Premium Fast-Casual &amp; Dine-in Restaurant
+        </div>
+      </div>
+
+      <div class="cover-grid">
+        <div class="meta-box">
+          <label>Technology Partner</label>
+          <value>Koraxa Technologies</value>
+        </div>
+        <div class="meta-box">
+          <label>Architecture Mode</label>
+          <value>Offline-First Local POS</value>
+        </div>
+        <div class="meta-box">
+          <label>Target Platform</label>
+          <value>Windows 10/11 Desktop</value>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span>Confidential &amp; Proprietary — Koraxa Technologies</span>
+      <span>System Architecture Specification</span>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 2: HIGH LEVEL ARCHITECTURE ==================== -->
+  <div class="page">
+    <div class="doc-header">
+      <div class="brand-group">
+        <div class="brand-logo">K</div>
+        <div>
+          <div class="brand-name">KORAXA TECHNOLOGIES</div>
+          <div class="brand-sub">Technical Architecture Specification</div>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <div>Client: <b>Talking Tables</b></div>
+        <div>Location: <b>Vadlamudi 522213</b></div>
+      </div>
+    </div>
+
+    <div>
+      <h1><span class="badge">01</span> System Topology &amp; Component Architecture</h1>
+      <p>
+        The <b>Talking Tables POS &amp; Ledger System</b> is engineered using a <b>Local-First Desktop Architecture</b>. It guarantees 100% operational uptime at the billing counter regardless of internet stability, while providing automated cloud/mobile audit synching via the WhatsApp Business protocol.
+      </p>
+
+      <!-- SVG ARCHITECTURE TOPOLOGY DIAGRAM -->
+      <div class="diagram-container">
+        <svg viewBox="0 0 760 260" width="100%" height="210" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="gradHeader" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0284c7" />
+              <stop offset="100%" stop-color="#0f172a" />
+            </linearGradient>
+            <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+              <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#0f172a" flood-opacity="0.1"/>
+            </filter>
+          </defs>
+
+          <!-- Outer Box: Counter PC -->
+          <rect x="10" y="10" width="460" height="235" rx="10" fill="#ffffff" stroke="#0284c7" stroke-width="2" filter="url(#shadow)"/>
+          <rect x="10" y="10" width="460" height="28" rx="8" fill="url(#gradHeader)"/>
+          <text x="25" y="28" fill="#ffffff" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="11">BILLING COUNTER WORKSTATION (WINDOWS RUNTIME - OFFLINE RESILIENT)</text>
+
+          <!-- POS UI Module -->
+          <rect x="25" y="50" width="130" height="60" rx="6" fill="#f0f9ff" stroke="#0284c7" stroke-width="1.2"/>
+          <text x="35" y="72" fill="#0369a1" font-weight="700" font-size="10">POS Terminal</text>
+          <text x="35" y="86" fill="#475569" font-size="8">• Fast Menu Search</text>
+          <text x="35" y="98" fill="#475569" font-size="8">• Zero KOT Flow</text>
+
+          <!-- Expense Module -->
+          <rect x="175" y="50" width="130" height="60" rx="6" fill="#fff1f2" stroke="#e11d48" stroke-width="1.2"/>
+          <text x="185" y="72" fill="#be123c" font-weight="700" font-size="10">Expense Ledger</text>
+          <text x="185" y="86" fill="#475569" font-size="8">• Meat &amp; Groceries</text>
+          <text x="185" y="98" fill="#475569" font-size="8">• Staff Daily Wages</text>
+
+          <!-- Analytics & Reports -->
+          <rect x="325" y="50" width="130" height="60" rx="6" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.2"/>
+          <text x="335" y="72" fill="#15803d" font-weight="700" font-size="10">Audit Engine</text>
+          <text x="335" y="86" fill="#475569" font-size="8">• Gross Sales &amp; Margin</text>
+          <text x="335" y="98" fill="#475569" font-size="8">• jsPDF Generator</text>
+
+          <!-- Central Local DB -->
+          <rect x="110" y="145" width="260" height="80" rx="8" fill="#f8fafc" stroke="#475569" stroke-width="1.5" stroke-dasharray="3,3"/>
+          <text x="155" y="170" fill="#0f172a" font-weight="800" font-size="11">Embedded SQLite / IndexedDB</text>
+          <text x="135" y="188" fill="#64748b" font-size="8.5">• Table: bills &amp; bill_items (Clean Receipt Spec)</text>
+          <text x="135" y="202" fill="#64748b" font-size="8.5">• Table: daily_expenses &amp; restaurant_settings</text>
+
+          <!-- Connecting Arrows Inside PC -->
+          <line x1="90" y1="110" x2="160" y2="145" stroke="#0284c7" stroke-width="1.5" marker-end="url(#arrow)"/>
+          <line x1="240" y1="110" x2="240" y2="145" stroke="#e11d48" stroke-width="1.5"/>
+          <line x1="390" y1="110" x2="320" y2="145" stroke="#16a34a" stroke-width="1.5"/>
+
+          <!-- Hardware Outputs (Right Side) -->
+          <!-- 1. Thermal Printer -->
+          <rect x="520" y="20" width="220" height="58" rx="8" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" filter="url(#shadow)"/>
+          <text x="535" y="42" fill="#0f172a" font-weight="700" font-size="10">80mm Thermal Printer</text>
+          <text x="535" y="58" fill="#64748b" font-size="8">ESC/POS Direct USB/Network Print (No KOT)</text>
+
+          <!-- 2. Local Storage -->
+          <rect x="520" y="100" width="220" height="58" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="1.5" filter="url(#shadow)"/>
+          <text x="535" y="122" fill="#0284c7" font-weight="700" font-size="10">Local Disk Storage</text>
+          <text x="535" y="138" fill="#64748b" font-size="8">C:\TalkingTables\Reports\*.pdf Auto-saved</text>
+
+          <!-- 3. WhatsApp Direct Document Dispatch -->
+          <rect x="520" y="180" width="220" height="58" rx="8" fill="#ffffff" stroke="#22c55e" stroke-width="1.5" filter="url(#shadow)"/>
+          <text x="535" y="200" fill="#15803d" font-weight="700" font-size="10">Direct WhatsApp PDF Document</text>
+          <text x="535" y="214" fill="#64748b" font-size="8">Binary .pdf Attachment to +91 9346477777</text>
+          <text x="535" y="226" fill="#047857" font-weight="600" font-size="7.5">Talking Tables Branded Document (Not Text)</text>
+
+          <!-- Connections to External -->
+          <line x1="155" y1="75" x2="520" y2="45" stroke="#0f172a" stroke-width="1.8" stroke-dasharray="4,2"/>
+          <line x1="455" y1="70" x2="520" y2="125" stroke="#0284c7" stroke-width="1.8"/>
+          <line x1="455" y1="90" x2="520" y2="205" stroke="#22c55e" stroke-width="2"/>
+        </svg>
+        <div class="diagram-caption">Figure 1.0: Talking Tables POS End-to-End Component Architecture</div>
+      </div>
+
+      <h2>Core Architecture Highlights</h2>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">1. High-Velocity Zero-KOT Billing</div>
+          <p>Unlike standard restaurant ERPs that trigger Kitchen Order Tickets (KOT) causing printer lag, the Talking Tables engine prints directly to the master receipt in sub-500ms.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">2. Clean Receipt Formatting</div>
+          <p>Receipt printer stream completely suppresses payment method breakdowns (no UPI, Cash, or Card lines), reducing paper roll waste by 35% and accelerating checkout.</p>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">3. PnL Integrated Ledger</div>
+          <p>Eliminates separate tally/bookkeeping by collecting meat, grocery, and wage outflows inside the POS terminal to present real-time Net Profit figures.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">4. Direct WhatsApp PDF Document (Not Text)</div>
+          <p>Generates vector-crisp PDF audits with official Talking Tables branding, auto-saves the file locally, and transmits the actual binary <code>.pdf</code> document file directly to <code>+91 9346477777</code> self-chat.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span>Koraxa Technologies — Engineering Division</span>
+      <span>Document KT-ARCH-TT-2026-V1</span>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 3: DATA SCHEMA & DATABASE ==================== -->
+  <div class="page">
+    <div class="doc-header">
+      <div class="brand-group">
+        <div class="brand-logo">K</div>
+        <div>
+          <div class="brand-name">KORAXA TECHNOLOGIES</div>
+          <div class="brand-sub">Database Design &amp; Data Pipeline</div>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <div>Client: <b>Talking Tables</b></div>
+        <div>Schema: <b>V1.2 Normalized Relational</b></div>
+      </div>
+    </div>
+
+    <div>
+      <h1><span class="badge">02</span> Relational Database Architecture</h1>
+      <p>
+        Data persistence is structured around five normalized entities. This schema guarantees instant querying of historical bills, rapid aggregation of operating expenses, and consistent synchronization.
+      </p>
+
+      <h2>Entity Relationship Structure (DDL Specification)</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 20%;">Table Name</th>
+            <th style="width: 30%;">Key Attributes</th>
+            <th style="width: 18%;">Constraints</th>
+            <th style="width: 32%;">Operational Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>restaurant_settings</code></td>
+            <td><code>id, name, address, phone, whatsapp_number, gst_fssai</code></td>
+            <td>Single Row (ID=1)</td>
+            <td>Stores Talking Tables profile, Vadlamudi address, and target owner WhatsApp (+91 9346477777).</td>
+          </tr>
+          <tr>
+            <td><code>menu_items</code></td>
+            <td><code>id, category, name, price, is_available</code></td>
+            <td>PK: <code>id</code></td>
+            <td>Categorized item catalog (Biryani, Starters, Curries, Breads, Drinks) with real-time price modification.</td>
+          </tr>
+          <tr>
+            <td><code>bills</code></td>
+            <td><code>bill_no, bill_date, bill_time, customer_info, table_no, subtotal, discount, grand_total</code></td>
+            <td>PK: <code>bill_no</code> (e.g. TT-1001)<br>INDEX: <code>bill_date</code></td>
+            <td>Customer invoice records. <i>Architectural Note: UPI/Cash/Card breakdown attributes are deliberately omitted from the invoice view.</i></td>
+          </tr>
+          <tr>
+            <td><code>bill_items</code></td>
+            <td><code>id, bill_no, item_name, unit_price, quantity, total_amount</code></td>
+            <td>PK: <code>id</code><br>FK: <code>bill_no -> bills</code></td>
+            <td>Granular itemized breakdown per bill, enabling product-level sales velocity analysis in daily PDF audits.</td>
+          </tr>
+          <tr>
+            <td><code>daily_expenses</code></td>
+            <td><code>id, expense_date, category, description, amount, paid_by</code></td>
+            <td>PK: <code>id</code><br>INDEX: <code>expense_date</code></td>
+            <td>Audit log of store outlays: Meat, Groceries, Staff Salaries, Commercial LPG fuel, and Utilities.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Dual-Path Report &amp; WhatsApp Direct Document Engine</h2>
+      <div class="callout callout-info">
+        <b>Direct Document Execution Workflow:</b> When the cashier or manager invokes <code>Download PDF &amp; Send to WhatsApp</code>, the system renders a vector-branded Talking Tables PDF and executes two parallel atomic tasks:
+        <b>Path A (Local Disk):</b> Directly writes <code>Talking_Tables_Daily_Audit_YYYY-MM-DD.pdf</code> to the billing PC.
+        <b>Path B (WhatsApp Document):</b> Bypasses plain-text URLs by using Web Share API binary sharing &amp; local microservice to transmit the <b>actual .pdf file</b> directly into the owner's WhatsApp self-chat (+91 9346477777).
+      </div>
+
+      <!-- SVG WORKFLOW SEQUENCE DIAGRAM -->
+      <div class="diagram-container">
+        <svg viewBox="0 0 720 120" width="100%" height="95" xmlns="http://www.w3.org/2000/svg">
+          <!-- Step 1 -->
+          <rect x="10" y="25" width="150" height="60" rx="6" fill="#0f172a" />
+          <text x="25" y="50" fill="#38bdf8" font-size="8" font-weight="700">STEP 1: AGGREGATE</text>
+          <text x="25" y="65" fill="#ffffff" font-size="9" font-weight="600">Sales - Expenses</text>
+          <text x="25" y="76" fill="#94a3b8" font-size="7.5">Calculate Net Margin</text>
+
+          <line x1="160" y1="55" x2="190" y2="55" stroke="#0284c7" stroke-width="2" marker-end="url(#arrow)"/>
+
+          <!-- Step 2 -->
+          <rect x="190" y="25" width="150" height="60" rx="6" fill="#0284c7" />
+          <text x="205" y="47" fill="#e0f2fe" font-size="8" font-weight="700">STEP 2: RENDER PDF</text>
+          <text x="205" y="60" fill="#ffffff" font-size="8.5" font-weight="700">Talking Tables Brand</text>
+          <text x="205" y="72" fill="#e0f2fe" font-size="7.5">Itemized Audit Ledger</text>
+          <text x="205" y="82" fill="#e0f2fe" font-size="7">Binary Blob + File Object</text>
+
+          <line x1="340" y1="55" x2="370" y2="55" stroke="#0284c7" stroke-width="2"/>
+
+          <!-- Step 3A: Local -->
+          <rect x="370" y="10" width="160" height="42" rx="6" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.2"/>
+          <text x="382" y="28" fill="#15803d" font-size="8" font-weight="700">PATH A: LOCAL PC DISK</text>
+          <text x="382" y="42" fill="#334155" font-size="7.5">Direct Download: .pdf file</text>
+
+          <!-- Step 3B: WhatsApp Document -->
+          <rect x="370" y="62" width="160" height="46" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1.2"/>
+          <text x="382" y="79" fill="#047857" font-size="8" font-weight="700">PATH B: DIRECT PDF FILE</text>
+          <text x="382" y="91" fill="#334155" font-size="7">Direct File Send (Not Text)</text>
+          <text x="382" y="101" fill="#047857" font-size="7" font-weight="600">To: +91 9346477777</text>
+
+          <line x1="530" y1="85" x2="560" y2="85" stroke="#059669" stroke-width="2"/>
+
+          <!-- Final Box -->
+          <rect x="560" y="35" width="150" height="50" rx="6" fill="#047857"/>
+          <text x="575" y="55" fill="#ffffff" font-size="8.5" font-weight="700">OWNER WHATSAPP</text>
+          <text x="575" y="68" fill="#a7f3d0" font-size="7.5">Actual .PDF Document</text>
+          <text x="575" y="78" fill="#ffffff" font-size="6.5">Ready to Open &amp; Forward</text>
+        </svg>
+        <div class="diagram-caption">Figure 2.0: Synchronous PDF Generation &amp; Direct Document File Dispatch Pipeline</div>
+      </div>
+
+      <h2>Deployment &amp; Hardware Compatibility Matrix</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Hardware / Component</th>
+            <th>Approved Standards</th>
+            <th>Interface Protocol</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Billing Workstation</b></td>
+            <td>Windows 10 / 11 Desktop or All-in-One POS Touch Screen</td>
+            <td>Native Native Web Runtime (Electron / WebView2)</td>
+          </tr>
+          <tr>
+            <td><b>Thermal Receipt Printer</b></td>
+            <td>TVS RP-3200, Epson TM-T82, NGX, Posiflex (80mm width)</td>
+            <td>USB 2.0 / ESC-POS Virtual Serial / LAN Ethernet</td>
+          </tr>
+          <tr>
+            <td><b>Barcode / Handheld Scanner</b></td>
+            <td>Standard 1D / 2D QR Scanner (Optional add-on)</td>
+            <td>HID Keyboard Wedge Emulation</td>
+          </tr>
+          <tr>
+            <td><b>Cash Drawer Integration</b></td>
+            <td>Standard 24V Solenoid RJ11 Port</td>
+            <td>Auto-kick trigger via ESC/POS command <code>ESC p 0</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="footer">
+      <span>Koraxa Technologies — Engineering Division</span>
+      <span>Document KT-ARCH-TT-2026-V1</span>
+    </div>
+  </div>
+
+</body>
+</html>
+

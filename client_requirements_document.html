@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Client Requirements Specification (SRS) - Talking Tables | Koraxa Technologies</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+    @page {
+      size: A4;
+      margin: 14mm 16mm 14mm 16mm;
+      @bottom-right {
+        content: "Page " counter(page);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 8pt;
+        color: #64748b;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #1e293b;
+      background: #ffffff;
+      line-height: 1.5;
+      font-size: 9.5pt;
+    }
+
+    .page {
+      page-break-after: always;
+      position: relative;
+      min-height: 260mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .page:last-child {
+      page-break-after: avoid;
+    }
+
+    /* Corporate Header */
+    .doc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #0f172a;
+      margin-bottom: 16px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #059669, #0f172a);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 14pt;
+    }
+
+    .brand-name {
+      font-size: 13pt;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-sub {
+      font-size: 7.5pt;
+      color: #059669;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .doc-meta {
+      text-align: right;
+      font-size: 7.5pt;
+      color: #64748b;
+    }
+
+    .doc-meta b {
+      color: #0f172a;
+    }
+
+    /* Cover Page */
+    .cover-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+      padding: 30px 10px;
+    }
+
+    .cover-tag {
+      display: inline-block;
+      align-self: flex-start;
+      background: #ecfdf5;
+      color: #047857;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 8.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+      border: 1px solid #a7f3d0;
+    }
+
+    .cover-title {
+      font-size: 26pt;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    .cover-subtitle {
+      font-size: 11.5pt;
+      color: #475569;
+      margin-bottom: 26px;
+    }
+
+    .client-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #059669;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .client-card h3 {
+      font-size: 9.5pt;
+      font-weight: 700;
+      color: #059669;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .client-name {
+      font-size: 15pt;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    .client-details {
+      font-size: 9pt;
+      color: #475569;
+      line-height: 1.5;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .meta-box {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+
+    .meta-box label {
+      display: block;
+      font-size: 7pt;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+
+    .meta-box value {
+      display: block;
+      font-size: 9.5pt;
+      font-weight: 700;
+      color: #0f172a;
+      margin-top: 2px;
+    }
+
+    /* Headings */
+    h1 {
+      font-size: 13.5pt;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h1 .badge {
+      background: #059669;
+      color: #fff;
+      font-size: 8pt;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    h2 {
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: #1e293b;
+      margin-top: 14px;
+      margin-bottom: 6px;
+    }
+
+    p {
+      color: #334155;
+      margin-bottom: 8px;
+      line-height: 1.45;
+    }
+
+    /* Requirement Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0 14px 0;
+      font-size: 8pt;
+    }
+
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      font-weight: 700;
+      text-align: left;
+      padding: 6px 10px;
+      border: 1px solid #0f172a;
+      font-size: 7.5pt;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 6px 10px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+      vertical-align: top;
+    }
+
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    .req-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: #059669;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 6.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .status-mandatory { background: #fee2e2; color: #991b1b; }
+    .status-custom { background: #e0f2fe; color: #075985; }
+    .status-omitted { background: #fef3c7; color: #92400e; }
+
+    /* Highlights & Callouts */
+    .callout {
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin: 10px 0;
+      font-size: 8.5pt;
+      border-left: 4px solid;
+    }
+
+    .callout-emerald {
+      background: #ecfdf5;
+      border-color: #059669;
+      color: #064e3b;
+    }
+
+    .callout-amber {
+      background: #fffbeb;
+      border-color: #d97706;
+      color: #78350f;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .card-title {
+      font-size: 9pt;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    /* Signature Section */
+    .sign-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #cbd5e1;
+    }
+
+    .sign-box {
+      border: 1px dashed #94a3b8;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      min-height: 90px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sign-title {
+      font-size: 8pt;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+
+    .sign-line {
+      border-top: 1px solid #0f172a;
+      margin-top: 30px;
+      padding-top: 4px;
+      font-size: 8pt;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .footer {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 8px;
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      font-size: 7.5pt;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== PAGE 1: COVER PAGE ==================== -->
+  <div class="page">
+    <div class="doc-header">
+      <div class="brand-group">
+        <div class="brand-logo">K</div>
+        <div>
+          <div class="brand-name">KORAXA TECHNOLOGIES</div>
+          <div class="brand-sub">Enterprise Software Development Division</div>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <div>Doc ID: <b>KT-SRS-TT-2026-V1</b></div>
+        <div>Date: <b>October 31, 2026</b></div>
+      </div>
+    </div>
+
+    <div class="cover-container">
+      <div class="cover-tag">Official Software Requirements Specification (SRS)</div>
+      <h1 class="cover-title">Client Requirements &amp; Functional Scope</h1>
+      <p class="cover-subtitle">
+        Custom Point-of-Sale (POS) Terminal, Daily Expense Accounting, and WhatsApp Automated Self-Reporting Software for Talking Tables Restaurant.
+      </p>
+
+      <div class="client-card">
+        <h3>Client Profile &amp; Location Record</h3>
+        <div class="client-name">Talking Tables Restaurant</div>
+        <div class="client-details">
+          <b>Physical Address:</b> Beside Vignan University Main Gate, Vadlamudi, Guntur Dist, Andhra Pradesh – 522213<br>
+          <b>Official Registered Phone:</b> +91 9346477777<br>
+          <b>Authorized Engagement:</b> Koraxa Technologies Commercial Software Delivery
+        </div>
+      </div>
+
+      <div class="meta-grid">
+        <div class="meta-box">
+          <label>Delivering Company</label>
+          <value>Koraxa Technologies</value>
+        </div>
+        <div class="meta-box">
+          <label>Client Reference</label>
+          <value>Talking Tables, Vadlamudi</value>
+        </div>
+        <div class="meta-box">
+          <label>Delivery Classification</label>
+          <value>Turnkey Restaurant POS</value>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span>Delivered by Koraxa Technologies | Corporate Confidential</span>
+      <span>Client Requirements Document (SRS)</span>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 2: DETAILED CLIENT REQUIREMENTS ==================== -->
+  <div class="page">
+    <div class="doc-header">
+      <div class="brand-group">
+        <div class="brand-logo">K</div>
+        <div>
+          <div class="brand-name">KORAXA TECHNOLOGIES</div>
+          <div class="brand-sub">Client Requirements Specification</div>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <div>Client: <b>Talking Tables</b></div>
+        <div>Contact: <b>+91 9346477777</b></div>
+      </div>
+    </div>
+
+    <div>
+      <h1><span class="badge">01</span> Specific Client Requirements Matrix</h1>
+      <p>
+        The following technical and functional requirements have been formally commissioned by <b>Talking Tables</b>, located Beside Vignan University Main Gate, Vadlamudi, and architected by <b>Koraxa Technologies</b>:
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 10%;">Req ID</th>
+            <th style="width: 25%;">Feature Module</th>
+            <th style="width: 50%;">Client Detailed Specification</th>
+            <th style="width: 15%;">Classification</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="req-num">FR-01</td>
+            <td><b>POS Terminal &amp; Menu</b></td>
+            <td>Full-featured touch/keyboard billing terminal configured with Talking Tables specific menu (Starters, Biryani, Curries, Rotis, Beverages). Fast search, live cart, quantity toggles, and zero lag.</td>
+            <td><span class="status-badge status-mandatory">Mandatory</span></td>
+          </tr>
+          <tr>
+            <td class="req-num">FR-02</td>
+            <td><b>KOT Elimination</b></td>
+            <td><b>Client explicitly requires NO KOT (Kitchen Order Ticket).</b> Orders must bypass kitchen chit printing and directly finalize into master customer bills with a single click.</td>
+            <td><span class="status-badge status-omitted">Excluded by Client</span></td>
+          </tr>
+          <tr>
+            <td class="req-num">FR-03</td>
+            <td><b>Clean Customer Bill (No Payment Options)</b></td>
+            <td><b>The printed customer bill MUST NOT show payment mode breakdowns (NO UPI, CASH, or CARD options printed on the bill).</b> The bill must only show Bill No, Date/Time, Items, Quantities, Rates, and Grand Total.</td>
+            <td><span class="status-badge status-custom">Special Constraint</span></td>
+          </tr>
+          <tr>
+            <td class="req-num">FR-04</td>
+            <td><b>Operational Dashboard</b></td>
+            <td>Real-time managerial overview featuring Today's Gross Sales, Total Bills Issued, Daily Expenses Outflow, and Net Operating Margin (Sales minus Expenses).</td>
+            <td><span class="status-badge status-mandatory">Mandatory</span></td>
+          </tr>
+          <tr>
+            <td class="req-num">FR-05</td>
+            <td><b>Bill History &amp; Reprint</b></td>
+            <td>Searchable archive of historical bills by Bill Number or Customer Mobile, with one-click re-print capability for auditing or customer requests.</td>
+            <td><span class="status-badge status-mandatory">Mandatory</span></td>
+          </tr>
+          <tr>
+            <td class="req-num">FR-06</td>
+            <td><b>Daily Expenses Accounting</b></td>
+            <td>Integrated expense ledger to record store outflows including <b>Meat (Chicken/Mutton/Fish), Groceries &amp; Vegetables, Staff Salaries &amp; Daily Wages, Commercial LPG Gas, and Maintenance</b>.</td>
+            <td><span class="status-badge status-mandatory">Mandatory</span></td>
+          </tr>
+          <tr>
+            <td class="req-num">FR-07</td>
+            <td><b>Sales &amp; Expense PDF Report</b></td>
+            <td>End-of-day audit reports combining food revenue with itemized expenses, producing an executive PDF document with net profit calculation.</td>
+            <td><span class="status-badge status-mandatory">Mandatory</span></td>
+          </tr>
+          <tr>
+            <td class="req-num">FR-08</td>
+            <td><b>Direct PDF File Download &amp; WhatsApp Send</b></td>
+            <td><b>Direct File Attachment (NOT text-only links):</b> When downloading the sales report, the system MUST save the PDF locally to the billing PC AND directly send the actual binary <b>.pdf file</b> with full <b>Talking Tables Branding</b> directly to the owner's WhatsApp self-chat (<code>+91 9346477777</code>).</td>
+            <td><span class="status-badge status-custom">Direct Document</span></td>
+          </tr>
+          <tr>
+            <td class="req-num">FR-09</td>
+            <td><b>Store Settings Manager</b></td>
+            <td>Self-service configuration for restaurant metadata (Talking Tables, Vadlamudi address, phone), WhatsApp dispatch number, and menu item/price manager.</td>
+            <td><span class="status-badge status-mandatory">Mandatory</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Detailed Analysis of Specialized Exclusions</h2>
+      <div class="callout callout-amber">
+        <b>1. Rationale for KOT Elimination:</b> Fast-casual dining and counter-service models near university campuses (e.g. Vignan University) experience heavy lunch rush surges. Bypassing KOT saves 15-20 seconds per ticket and eliminates kitchen printer maintenance.
+      </div>
+      <div class="callout callout-emerald">
+        <b>2. Rationale for Clean Receipt (No UPI/Cash/Card on Bill):</b> Talking Tables requests a clean, uncluttered invoice for patrons. Omitting payment labels keeps the bill compact, simplifies accounting disputes, and minimizes thermal paper roll consumption.
+      </div>
+    </div>
+
+    <div class="footer">
+      <span>Delivered by Koraxa Technologies</span>
+      <span>Document KT-SRS-TT-2026-V1</span>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 3: DELIVERABLES & SIGN OFF ==================== -->
+  <div class="page">
+    <div class="doc-header">
+      <div class="brand-group">
+        <div class="brand-logo">K</div>
+        <div>
+          <div class="brand-name">KORAXA TECHNOLOGIES</div>
+          <div class="brand-sub">Commercial Scope &amp; Sign-off</div>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <div>Client: <b>Talking Tables</b></div>
+        <div>Location: <b>Vadlamudi</b></div>
+      </div>
+    </div>
+
+    <div>
+      <h1><span class="badge">02</span> Software Delivery Scope &amp; Sign-Off</h1>
+      <p>
+        <b>Koraxa Technologies</b> commits to delivering the complete software package for <b>Talking Tables</b> under the following deliverables schedule:
+      </p>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">📦 Deliverable 1: Counter POS Software</div>
+          <p>Windows desktop executable with offline-first local database, instant 80mm receipt generation without KOT, and clean bill formatting.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">📊 Deliverable 2: Daily PnL Ledger Engine</div>
+          <p>Expense tracking module for meat, vegetables, groceries, and daily staff wages with real-time net margin calculations.</p>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">📄 Deliverable 3: Direct PDF &amp; WhatsApp File Engine</div>
+          <p>Branded Talking Tables PDF generator that downloads the document locally and transmits the actual binary <code>.pdf</code> file (not text) directly to the owner's WhatsApp at <code>+91 9346477777</code>.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">⚙️ Deliverable 4: Settings &amp; Menu Manager</div>
+          <p>Built-in administrative tool to update dish rates, add new student specials, and configure restaurant profile details.</p>
+        </div>
+      </div>
+
+      <h2>Client Acceptance &amp; Commercial Authorization</h2>
+      <p>
+        By signing below, both parties acknowledge and agree to the functional scope, exclusions (No KOT, No Payment Breakdown on Bill), and technical architecture specified in this document.
+      </p>
+
+      <div class="sign-section">
+        <div class="sign-box">
+          <div class="sign-title">Delivered By: Koraxa Technologies</div>
+          <div class="sign-line">Authorized Signatory / Technical Director<br>Koraxa Technologies</div>
+        </div>
+        <div class="sign-box">
+          <div class="sign-title">Accepted By: Talking Tables</div>
+          <div class="sign-line">Proprietor / Authorized Manager<br>Talking Tables, Vadlamudi (Ph: +91 9346477777)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span>Koraxa Technologies — Commercial &amp; Engineering Division</span>
+      <span>Document KT-SRS-TT-2026-V1</span>
+    </div>
+  </div>
+
+</body>
+</html>
+
